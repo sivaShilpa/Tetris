@@ -21,6 +21,7 @@ let nextPiece = true
 let isOldPieceDone = true
 let column = 0
 let row = 0
+let filledRows = []
 
 
   /*----- cached elements  -----*/
@@ -95,12 +96,18 @@ function keyBehavior(evt){
             board[column][0] = piece
             board[column+1][0] = 'b'
         }
+        else{
+            return
+        }
         render()        
     }else if(evt.key === "ArrowRight"){
         if(column <= 9){
             column = column + 1
             board[column][0] = piece
             board[column-1][0] = 'b'
+        }
+        else{
+            return
         }
         render()  
     }
@@ -113,14 +120,14 @@ function dropPiece(){
                 endRowIndex = rIdx
                 if(endRowIndex === 19 && board[column][endRowIndex]==='b'){
                     board[column][endRowIndex]=piece
+                    row = endRowIndex
                     board[column][0] = 'b'
-                    // board[4][19] = 'b'
-                    isOldPieceDone = true
-                    console.log(column, endRowIndex)
+                    isOldPieceDone = true                    
                 }
                 else{
                     endRowIndex = endRowIndex-1
                     board[column][endRowIndex]=piece
+                    row = endRowIndex
                     board[column][0] = 'b'
                     if(board[column][endRowIndex+1]!=='b'){
                         isOldPieceDone = true
@@ -132,8 +139,8 @@ function dropPiece(){
                     if(endRowIndex===1){
                         gameOver = true
                     }
-                    console.log(column, endRowIndex)
-                }               
+                }
+                isRowFilled()             
                 render()
             }
         }
@@ -148,8 +155,7 @@ function dropPiece(){
 }
 function isGameOver(){
     messageEl.innerText = "GAME OVER!!!"
-}        
-    
+}     
 function pieceAppear(){
     if(isOldPieceDone === true){
         column = 4
@@ -163,34 +169,31 @@ function pieceAppear(){
     }   
     render()
 }
-function findNewPieceColumn(){
-    let cIdxToReturn 
-    board.forEach((eachCol, cIdx) => {
-        if(cIdx === 4 || cIdx === 5){
-            board.forEach((eachRow, rIdx) =>{
-                if(board[cIdx][rIdx]!=='b' && rIdx === 0){
-                    cIdxToReturn = cIdx
-                }
-                else{
-                    return
-                }
-            })
+function isRowFilled(){
+    // console.log(column, row)
+    let rowFilled
+    for(let c = 0; c<=9; c++){
+        if(board[c][row]!=='b'){
+            rowFilled = true
+        }
+        else{
+            rowFilled = false
+            break
         }
         
-    })
-    return cIdxToReturn
-}
-    
-function moveLeft(cIdx, rIdx, piece){
-    for(let col = cIdx; col >=0; col--){
-        console.log("type")
-        board[col][0] = piece
-        board[col+1][0] = 'b'
     }
-    
+    console.log(rowFilled)
+    if(rowFilled){
+        disappearRow()
+    }    
 }
-function moveRight(){
-
+function disappearRow(){
+    for(let c = 0; c<=9; c++){
+        if(row!==0){
+            board[c][row] = board[c][row-1]
+        }
+    }
+    render()
 }
 init()
 
