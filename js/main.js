@@ -46,7 +46,10 @@ function init(){
     let piece = [0]
     
     render()
-    dropPiece(piece)
+    // while(isGameOver===false){
+        dropPiece(piece)
+    // }
+    
 }
 function render(){
     renderBoard()
@@ -75,28 +78,22 @@ function dropPiece(piece){
     board[4][0] = 'p'
     board[4].forEach((eachRow,rowIdx )=> {
             setTimeout(() => {
+                if(board[4][rowIdx]!=='b'){
+                    return
+                }
                 board[4][rowIdx] = 'p'
                 board[4][rowIdx-1] ='b'
+                if(rowIdx-1 === -1){
+                    isGameOver = true
+                }
                 renderBoard()
            }, 500*rowIdx)
             
         })
-    
-    renderBoard()
 }
-// function countDown(num) {
-//   let min = 0 
-//     for(let i = num; i >= 0; i--) {
-//         setTimeout(() => {
-//             console.log(`Count: ${i}`);
-//         }, 1000*min);
-//       min++
-//     }
-// }
-// countDown(3);
-
-
-
+function movePiece(){
+    
+}
 init()
 
 // function startGame(evt){
