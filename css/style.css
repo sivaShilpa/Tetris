@@ -1,0 +1,43 @@
+*{
+    font-family: Arial, Helvetica, sans-serif;
+    color:rgb(44, 42, 42);
+}
+#header{
+    font-size: 10vmin;
+    font-weight: bolder;
+    text-align: center; 
+      
+}
+#message{
+    font-size: 3vmin;
+    text-align: center;
+}
+#board{
+    display: grid;
+    width: 20vmin;
+    grid-template-rows: repeat(20, 1fr);
+    grid-template-columns: repeat(10, 1fr);
+    padding-left: 6vmin;
+    margin: 0vmin 25vmin 5vmin 25vmin;
+}    
+
+#board > div{    
+    width: 3vmin;
+    height: 3vmin;
+    border: 2px solid rgb(44, 42, 42);
+    /* background-color: black; */
+    align-items: center;
+    justify-content: center;
+}
+#playAgain{
+    height: 6vmin;
+    width: 20vmin;
+    border-radius: 3vmin;
+    border: 0.5vmin solid rgb(44, 42, 42);
+    font-weight: bolder;
+    font-size: 2vmin;
+    color: #F283A0;
+    background-color: black;
+    margin-left: 41vmin;
+}
+  
