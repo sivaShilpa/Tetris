@@ -54,7 +54,7 @@ function init(){
     
     render()
    
-    pieceAppear(piece)
+    pieceAppear()
 }
 function render(){
     renderBoard()
@@ -81,37 +81,28 @@ function renderControls(){
 }
 function keyBehavior(evt){
     if(evt.key === "ArrowDown"){
-        board.forEach((eachCol, cIdx)=>{
-            board.forEach((eachRow, rIdx)=>{
-                if(rIdx === 0){
-                    let cell = board[cIdx][rIdx]
-                    let cell1 = board[cIdx][rIdx+1]
-                    if(cell!=='b'&& cell1==='b'){
-                      dropPiece()
-                    }
-                }else{
-                    // gameOver = true
-                    return
-                }
-            })
-        })
-        
+        if(row === 0){
+            let cell = board[column][row]
+            let cell1 = board[column][row+1]
+            if(cell!=='b'&& cell1==='b'){
+                dropPiece()
+            }
+        }        
     }
     else if(evt.key === "ArrowLeft"){
-        if(gameOver === false){
-            let colIdx = findNewPieceColumn()
-            for(let col = colIdx; col >= 0; col--){
-                board[col][0] = piece
-                column = col
-                row = 0
-                board[col+1][0] = 'b'
-            }
-            render()
+        if(column >= 0){
+            column = column - 1
+            board[column][0] = piece
+            board[column+1][0] = 'b'
         }
-       
-        
+        render()        
     }else if(evt.key === "ArrowRight"){
-        
+        if(column <= 9){
+            column = column + 1
+            board[column][0] = piece
+            board[column-1][0] = 'b'
+        }
+        render()  
     }
 }
 function dropPiece(){
@@ -123,15 +114,21 @@ function dropPiece(){
                 if(endRowIndex === 19 && board[column][endRowIndex]==='b'){
                     board[column][endRowIndex]=piece
                     board[column][0] = 'b'
-                    if(endRowIndex===1){
-                        gameOver = true
-                    }
+                    // board[4][19] = 'b'
+                    isOldPieceDone = true
                     console.log(column, endRowIndex)
                 }
                 else{
                     endRowIndex = endRowIndex-1
                     board[column][endRowIndex]=piece
                     board[column][0] = 'b'
+                    if(board[column][endRowIndex+1]!=='b'){
+                        isOldPieceDone = true
+                    }
+                    else{
+                        isOldPieceDone = false
+                    }
+                    
                     if(endRowIndex===1){
                         gameOver = true
                     }
@@ -153,7 +150,7 @@ function isGameOver(){
     messageEl.innerText = "GAME OVER!!!"
 }        
     
-function pieceAppear(piece){
+function pieceAppear(){
     if(isOldPieceDone === true){
         column = 4
         row = 0
