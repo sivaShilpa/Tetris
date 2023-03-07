@@ -72,13 +72,13 @@ function renderControls(){
      = isGameOver? 'visible' : 'hidden'
 }
 function dropPiece(piece){
-    board[4][5] = 0
-    board[4].forEach(eachRow => {
+    board[4][0] = 'p'
+    board[4].forEach((eachRow,rowIdx )=> {
             setTimeout(() => {
-                board[4][eachRow] = 0
-                console.log(eachRow)
+                board[4][rowIdx] = 'p'
+                board[4][rowIdx-1] ='b'
                 renderBoard()
-           }, 100)
+           }, 500*rowIdx)
             
         })
     
