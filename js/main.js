@@ -140,8 +140,7 @@ function dropPiece(){
                         gameOver = true
                     }
                 }
-                isRowFilled()             
-                // render()
+                isRowFilled()                 
             }
         }
     })
@@ -153,9 +152,6 @@ function dropPiece(){
         renderMessage()
     }
 }
-function isGameOver(){
-    messageEl.innerText = "GAME OVER!!!"
-}     
 function pieceAppear(){
     if(isOldPieceDone === true){
         column = 4
@@ -163,14 +159,12 @@ function pieceAppear(){
         board[column][row] = piece[0]
         if(board[column][row+1]!=='b'){
             board[column][row] = piece[0]
-            isGameOver()
             render()
         }
     }   
     render()
 }
 function isRowFilled(){
-    // console.log(column, row)
     let rowFilled
     for(let c = 0; c<=9; c++){
         if(board[c][row]!=='b'){
@@ -182,7 +176,6 @@ function isRowFilled(){
         }
         
     }
-    console.log(rowFilled)
     if(rowFilled){
         disappearRow()
     }    
