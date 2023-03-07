@@ -93,7 +93,7 @@ function keyBehavior(evt){
     else if(evt.key === "ArrowLeft"){
         if(column >= 0){
             column = column - 1
-            board[column][0] = piece
+            board[column][0] = piece[0]
             board[column+1][0] = 'b'
         }
         else{
@@ -103,7 +103,7 @@ function keyBehavior(evt){
     }else if(evt.key === "ArrowRight"){
         if(column <= 9){
             column = column + 1
-            board[column][0] = piece
+            board[column][0] = piece[0]
             board[column-1][0] = 'b'
         }
         else{
@@ -119,14 +119,14 @@ function dropPiece(){
             if(board[column][rIdx]!=='b'|| rIdx===19){
                 endRowIndex = rIdx
                 if(endRowIndex === 19 && board[column][endRowIndex]==='b'){
-                    board[column][endRowIndex]=piece
+                    board[column][endRowIndex]=piece[0]
                     row = endRowIndex
                     board[column][0] = 'b'
                     isOldPieceDone = true                    
                 }
                 else{
                     endRowIndex = endRowIndex-1
-                    board[column][endRowIndex]=piece
+                    board[column][endRowIndex]=piece[0]
                     row = endRowIndex
                     board[column][0] = 'b'
                     if(board[column][endRowIndex+1]!=='b'){
@@ -141,13 +141,13 @@ function dropPiece(){
                     }
                 }
                 isRowFilled()             
-                render()
+                // render()
             }
         }
     })
     isOldPieceDone = true
     if(isOldPieceDone === true){
-        pieceAppear(piece)
+        pieceAppear()
     }
     if(gameOver === true){
         renderMessage()
@@ -160,9 +160,9 @@ function pieceAppear(){
     if(isOldPieceDone === true){
         column = 4
         row = 0
-        board[column][row] = piece
+        board[column][row] = piece[0]
         if(board[column][row+1]!=='b'){
-            board[column][row] = piece
+            board[column][row] = piece[0]
             isGameOver()
             render()
         }
@@ -189,8 +189,12 @@ function isRowFilled(){
 }
 function disappearRow(){
     for(let c = 0; c<=9; c++){
-        if(row!==0){
-            board[c][row] = board[c][row-1]
+        if(row>0){
+            for(let r = row; r>0; r--){
+                board[c][r] = board[c][r-1]
+                console.log(r)
+            }
+                
         }
     }
     render()
