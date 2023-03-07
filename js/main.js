@@ -13,11 +13,15 @@ const colors = {
 
 
   /*----- state variables -----*/
-let isGameOver = false;
+let gameOver = false;
 let board;
+let endRowIdx = 20;
+let piece;
+let nextPiece = true
+
 
   /*----- cached elements  -----*/
-const cellEls = [...document.querySelectorAll(".cell")]
+
 const boardEl = document.querySelector("#board")
 const messageEl = document.querySelector("#message")
 const playAgainEl = document.querySelector("#playAgain")
@@ -25,9 +29,9 @@ const playAgainEl = document.querySelector("#playAgain")
 
   /*----- event listeners -----*/
   
- cellEls.forEach(cellEl => cellEl.addEventListener("click", init))
-playAgainEl.addEventListener('click', init)
 
+playAgainEl.addEventListener('click', init)
+document.addEventListener('keyup', keyBehavior)
   /*----- functions -----*/
 function init(){
     board = [
@@ -42,13 +46,16 @@ function init(){
         ['b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b'],
         ['b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b']
     ]
-    isGameOver = false
-    let piece = [0]
+    gameOver = false
+    piece = ['p']
     
     render()
-    // while(isGameOver===false){
-        dropPiece(piece)
-    // }
+   
+    pieceAppear(piece)
+    
+   
+    // isGameOver(piece)
+      
     
 }
 function render(){
@@ -66,99 +73,103 @@ function renderBoard(){
     })
 }
 function renderMessage(){
-    if(isGameOver === true){
+    if(gameOver === true){
         messageEl.innerText = "GAME OVER!!!"
     }
 }
 function renderControls(){
     playAgainEl.style.visibility
-     = isGameOver? 'visible' : 'hidden'
+     = gameOver? 'visible' : 'hidden'
 }
-function dropPiece(piece){
-    board[4][0] = 'p'
-    board[4].forEach((eachRow,rowIdx )=> {
-            setTimeout(() => {
-                if(board[4][rowIdx]!=='b'){
+function keyBehavior(evt){
+    if(evt.key === "ArrowDown"){
+        board.forEach((eachCol, cIdx)=>{
+            board.forEach((eachRow, rIdx)=>{
+                if(rIdx === 0){
+                    let cell = board[cIdx][rIdx]
+                    let cell1 = board[cIdx][rIdx+1]
+                    if(cell!=='b'&& cell1==='b'){
+                      dropPiece(cIdx,rIdx, piece)
+                    }
+                }else{
                     return
                 }
-                board[4][rowIdx] = 'p'
-                board[4][rowIdx-1] ='b'
-                if(rowIdx-1 === -1){
-                    isGameOver = true
-                }
-                renderBoard()
-           }, 500*rowIdx)
-            
+            })
         })
+        
+    }
+    else if(evt.key === "ArrowLeft"){
+        // board.forEach((eachCol, cIdx) => {
+        //     board.forEach((eachRow, rIdx) => {
+        //         if(rIdx === 0){
+        //             let cell = board[cIdx][rIdx]
+        //             if(gameOver === false){
+        //                 moveLeft(cIdx, rIdx, piece)
+        //             }
+        //         }
+        //     })
+        // })
+    }else if(evt.key === "ArrowRight"){
+        
+    }
 }
-function movePiece(){
+function dropPiece(colIdx,rowIdx,piece){
+    let endRowIndex;
+    board[colIdx].forEach((eachRow, rIdx) =>{
+        if(rIdx > rowIdx){
+            if(board[colIdx][rIdx]!=='b'|| rIdx===19){
+                endRowIndex = rIdx
+                if(endRowIndex === 19 && board[colIdx][endRowIndex]==='b'){
+                    board[colIdx][endRowIndex]=piece
+                    board[colIdx][rowIdx] = 'b'
+                    if(endRowIndex===1){
+                        gameOver = true
+                    }
+                }
+                else{
+                    endRowIndex = endRowIndex-1
+                    board[colIdx][endRowIndex]=piece
+                    board[colIdx][rowIdx] = 'b'
+                    if(endRowIndex===1){
+                        gameOver = true
+                    }
+                }               
+                render()
+            }
+        }
+    })
+    pieceAppear(piece)
     
+    if(gameOver === true){
+        isGameOver()
+    }
+}
+function isGameOver(){
+    messageEl.innerText = "GAME OVER!!!"
+}        
+    
+function pieceAppear(piece){
+    board[4][0] = piece
+    if(board[4][1]!=='b'){
+        board[4][0] = piece
+        isGameOver()
+        render()
+    }
+    
+    render()
+}
+
+    
+function moveLeft(cIdx, rIdx, piece){
+    for(let col = cIdx; col >=0; col--){
+        console.log("type")
+        board[col][0] = piece
+        board[col+1][0] = 'b'
+    }
+    
+}
+function moveRight(){
+
 }
 init()
 
-// function startGame(evt){
-//     let currentSpot = evt.target
-//     // console.log(currentSpot)
-//     if(isGameOver === false){
-//         if(currentSpot.tagName !== "DIV"){
-//             console.log(currentSpot.getAttribute("class"))
-//             return
-//         }else{
-//             currentSpot.style.backgroundColor = colors.tShape
-//         }
-//         // isRowFilled(currentSpot)
-//         if(isRowFilled(currentSpot)){
-//             clearRow(boardEl)
-//         }
-//     }
-//     else{
-//         resultEl.textContent = "GAME OVER!"
-//     }
-   
-// } 
-
-// function isRowFilled(evt){
-//     let state = false
-//     let currentRow = evt.parentElement
-//     let currentRowCells = [...currentRow.children]
-//     // console.log(state)
-//     currentRowCells.forEach(eachCell => {
-//         // console.log(eachCell.style.backgroundColor)
-//         if(eachCell.style.backgroundColor === "rgb(242, 131, 160)"){
-//             state = true            
-//         }
-//         else{
-//             state = false
-//             return           
-//         }        
-//     })
-//     return state
-// }
-// function clearRow(board){
-//     let rows = [...board.children]
-//     // console.log(rows)
-//     for(let i=19; i>=0; i--){
-//         let childrn = [...rows[i].children]
-//         // console.log(childrn)
-//         if(i===0){
-//             childrn.forEach(kid =>{
-//                 kid.style.backgroundColor === "black"
-//                 // console.log(kid)
-//             } )
-            
-//         }
-//         else{
-//             let nextChildrn = [...rows[i-1].children]
-//                 for(let j=0; j<childrn.length; j++){
-//                     childrn[j].style.backgroundColor = nextChildrn[j].style.backgroundColor
-//                 }
-            
-            
-//         }
-//         //if there are more than one row filled then the code should be adjusted to get the multiple filled rows deleted and move the other rows down.
-//     }
-
-// }
-// function isGameOver(){
-//     //check if last piece is in the row1, if yes then return true and 
-// }
