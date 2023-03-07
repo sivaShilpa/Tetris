@@ -13,11 +13,14 @@ const colors = {
 
 
   /*----- state variables -----*/
-let gameOver = false;
-let board;
-let endRowIdx = 20;
-let piece;
+let gameOver = false
+let board
+let endRowIndex
+let piece
 let nextPiece = true
+let isOldPieceDone = true
+let column = 0
+let row = 0
 
 
   /*----- cached elements  -----*/
@@ -52,11 +55,6 @@ function init(){
     render()
    
     pieceAppear(piece)
-    
-   
-    // isGameOver(piece)
-      
-    
 }
 function render(){
     renderBoard()
@@ -89,9 +87,10 @@ function keyBehavior(evt){
                     let cell = board[cIdx][rIdx]
                     let cell1 = board[cIdx][rIdx+1]
                     if(cell!=='b'&& cell1==='b'){
-                      dropPiece(cIdx,rIdx, piece)
+                      dropPiece()
                     }
                 }else{
+                    // gameOver = true
                     return
                 }
             })
@@ -101,7 +100,12 @@ function keyBehavior(evt){
     else if(evt.key === "ArrowLeft"){
         if(gameOver === false){
             let colIdx = findNewPieceColumn()
-            console.log(colIdx)
+            for(let col = colIdx; col >= 0; col--){
+                board[col][0] = piece
+                column = col
+                row = 0
+                board[col+1][0] = 'b'
+            }
             render()
         }
        
@@ -110,33 +114,37 @@ function keyBehavior(evt){
         
     }
 }
-function dropPiece(colIdx,rowIdx,piece){
-    let endRowIndex;
-    board[colIdx].forEach((eachRow, rIdx) =>{
-        if(rIdx > rowIdx){
-            if(board[colIdx][rIdx]!=='b'|| rIdx===19){
+function dropPiece(){
+    isOldPieceDone = false
+    board[column].forEach((eachRow, rIdx) =>{
+        if(rIdx > 0){
+            if(board[column][rIdx]!=='b'|| rIdx===19){
                 endRowIndex = rIdx
-                if(endRowIndex === 19 && board[colIdx][endRowIndex]==='b'){
-                    board[colIdx][endRowIndex]=piece
-                    board[colIdx][rowIdx] = 'b'
+                if(endRowIndex === 19 && board[column][endRowIndex]==='b'){
+                    board[column][endRowIndex]=piece
+                    board[column][0] = 'b'
                     if(endRowIndex===1){
                         gameOver = true
                     }
+                    console.log(column, endRowIndex)
                 }
                 else{
                     endRowIndex = endRowIndex-1
-                    board[colIdx][endRowIndex]=piece
-                    board[colIdx][rowIdx] = 'b'
+                    board[column][endRowIndex]=piece
+                    board[column][0] = 'b'
                     if(endRowIndex===1){
                         gameOver = true
                     }
+                    console.log(column, endRowIndex)
                 }               
                 render()
             }
         }
     })
-    pieceAppear(piece)
-    
+    isOldPieceDone = true
+    if(isOldPieceDone === true){
+        pieceAppear(piece)
+    }
     if(gameOver === true){
         renderMessage()
     }
@@ -146,21 +154,25 @@ function isGameOver(){
 }        
     
 function pieceAppear(piece){
-    board[4][0] = piece
-    if(board[4][1]!=='b'){
-        board[4][0] = piece
-        isGameOver()
-        render()
-    }
-    
+    if(isOldPieceDone === true){
+        column = 4
+        row = 0
+        board[column][row] = piece
+        if(board[column][row+1]!=='b'){
+            board[column][row] = piece
+            isGameOver()
+            render()
+        }
+    }   
     render()
 }
 function findNewPieceColumn(){
+    let cIdxToReturn 
     board.forEach((eachCol, cIdx) => {
         if(cIdx === 4 || cIdx === 5){
             board.forEach((eachRow, rIdx) =>{
                 if(board[cIdx][rIdx]!=='b' && rIdx === 0){
-                    return cIdx
+                    cIdxToReturn = cIdx
                 }
                 else{
                     return
@@ -169,6 +181,7 @@ function findNewPieceColumn(){
         }
         
     })
+    return cIdxToReturn
 }
     
 function moveLeft(cIdx, rIdx, piece){
