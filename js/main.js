@@ -99,16 +99,13 @@ function keyBehavior(evt){
         
     }
     else if(evt.key === "ArrowLeft"){
-        // board.forEach((eachCol, cIdx) => {
-        //     board.forEach((eachRow, rIdx) => {
-        //         if(rIdx === 0){
-        //             let cell = board[cIdx][rIdx]
-        //             if(gameOver === false){
-        //                 moveLeft(cIdx, rIdx, piece)
-        //             }
-        //         }
-        //     })
-        // })
+        if(gameOver === false){
+            let colIdx = findNewPieceColumn()
+            console.log(colIdx)
+            render()
+        }
+       
+        
     }else if(evt.key === "ArrowRight"){
         
     }
@@ -141,7 +138,7 @@ function dropPiece(colIdx,rowIdx,piece){
     pieceAppear(piece)
     
     if(gameOver === true){
-        isGameOver()
+        renderMessage()
     }
 }
 function isGameOver(){
@@ -158,7 +155,21 @@ function pieceAppear(piece){
     
     render()
 }
-
+function findNewPieceColumn(){
+    board.forEach((eachCol, cIdx) => {
+        if(cIdx === 4 || cIdx === 5){
+            board.forEach((eachRow, rIdx) =>{
+                if(board[cIdx][rIdx]!=='b' && rIdx === 0){
+                    return cIdx
+                }
+                else{
+                    return
+                }
+            })
+        }
+        
+    })
+}
     
 function moveLeft(cIdx, rIdx, piece){
     for(let col = cIdx; col >=0; col--){
