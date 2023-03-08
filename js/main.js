@@ -88,9 +88,9 @@ function init(){
         ['b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b']
     ]
     gameOver = false
-    
+    render() 
     nextpiece()
-    render()    
+       
 }
 function render(){
     renderBoard()
@@ -129,12 +129,12 @@ function keyBehavior(evt){
             
         }
         if(cells.every(cell=>{return cell!=='b'}) && bottomCells.every(cell=>{return cell==='b'})){
-            dropPiece()
-            // row = pieceObj.topLeft[1]+1 
+            isOldPieceDone = false
+            dropPiece()            
         }
         if(pieceObj.bottomLeft[1] === 19 || isOldPieceDone===true || board[column][pieceObj.bottomLeft[1]+1]!=='b'){
             isOldPieceDone = true
-            isRowFilled()
+            // isRowFilled()
             nextpiece()
         }
         render()
@@ -157,11 +157,11 @@ function keyBehavior(evt){
         }
         column = column-1
         cornerCalculator()
-        if(pieceObj.bottomLeft[1] === 19 || isOldPieceDone===true || board[column][pieceObj.bottomLeft[1]+1]!=='b'){
-            isOldPieceDone = true
-            isRowFilled()
-            nextpiece()
-        }
+        // if(pieceObj.bottomLeft[1] === 19 || isOldPieceDone===true || board[column][pieceObj.bottomLeft[1]+1]!=='b'){
+        //     isOldPieceDone = true
+        //     isRowFilled()
+        //     nextpiece()
+        // }
         render()        
     }else if(evt.key === "ArrowRight"){
         column = pieceObj.topLeft[0]
@@ -180,11 +180,11 @@ function keyBehavior(evt){
         }
         column = column+1
         cornerCalculator()
-        if(pieceObj.bottomLeft[1] === 19 || isOldPieceDone===true || board[column][pieceObj.bottomLeft[1]+1]!=='b'){
-            isOldPieceDone = true
-            isRowFilled()
-            nextpiece()
-        }
+        // if(pieceObj.bottomLeft[1] === 19 || isOldPieceDone===true || board[column][pieceObj.bottomLeft[1]+1]!=='b'){
+        //     isOldPieceDone = true
+        //     isRowFilled()
+        //     nextpiece()
+        // }
         render()      
     }
 }
@@ -205,18 +205,19 @@ function dropPiece(){
     else if(row === 0 && board[column][pieceObj.bottomLeft[1]+1]==='b'){
         for(let c=pieceObj.bottomLeft[0]; c<=pieceObj.bottomRight[0]; c++){
             for(let r=pieceObj.bottomLeft[1]; r>=pieceObj.topLeft[1]; r--){
-                board[c][r+1]=board[c][r]
-                // board[c][r] = board[c][0]                                               
+                board[c][r+1]=board[c][r]                                                             
             } 
             board[c][0] = 'b'                                 
         } 
     }else if(pieceObj.bottomLeft[1] === 19 || isOldPieceDone===true || board[column][pieceObj.bottomLeft[1]+1]!=='b'){
         isOldPieceDone = true
-        isRowFilled()
+        // isRowFilled()
         nextpiece()
     }
     row = row+1
-    cornerCalculator()    
+    cornerCalculator()
+    isOldPieceDone = false
+        
 }
 function pieceAppear(){
     nOfRowsInM = 0
@@ -261,10 +262,14 @@ function isRowFilled(){
         }
         if(rowFilled){
             filledRows.push(r)
+        }
+        else{
+            filledRows = []
         }        
     }
-    filledRows.push(19)
+    
     if(rowFilled){
+        filledRows.push(19)
         disappearRow()
     }    
 }
@@ -294,8 +299,10 @@ function randomPieceGenerator(){
     return piece
 }
 function nextpiece(){
-    isRowFilled()
-    pieceAppear()
+    if(isOldPieceDone === true){
+        // isRowFilled()
+        pieceAppear()
+    }    
     isOldPieceDone = false
 }
 init()
