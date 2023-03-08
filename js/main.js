@@ -51,9 +51,7 @@ originCol = 4
   /*----- state variables -----*/
 let gameOver = false
 let board
-let endRowIndex
 let piece
-let nextPiece = true
 let isOldPieceDone = true
 let column = 0
 let row = 0
@@ -61,8 +59,6 @@ let filledRows = []
 let nOfRowsInM
 let nOfColsInM
 let mArray
-let prevCol
-let prevRow
 let pieceObj = {'topLeft': [], 'topRight': [], 'bottomRight': [], 'bottomLeft': []}
 
   /*----- cached elements  -----*/
@@ -94,8 +90,12 @@ function init(){
     gameOver = false
     piece = shapeMatrices.O
     
-    render()   
-    pieceAppear()
+    render()
+    if(isOldPieceDone === true){
+        pieceAppear()
+        isOldPieceDone = false
+    }   
+    
 }
 function render(){
     renderBoard()
@@ -143,7 +143,8 @@ function keyBehavior(evt){
         column = pieceObj.topLeft[0]
         row = pieceObj.topLeft[1]
         
-        if(column > 0 && isOldPieceDone === false && row+nOfRowsInM-1 !== 19){
+        if(column >= 0 && isOldPieceDone === false && pieceObj.bottomLeft[1] !== 19){
+            console.log("A")
             for(let c = column; c<=pieceObj.topRight[0]; c++){
                 for(let r = row; r<= pieceObj.bottomLeft[1]; r++){                    
                     board[c-1][r] = board[c][r]
@@ -153,6 +154,7 @@ function keyBehavior(evt){
             }            
         }
         else{
+            console.log("B")
             return
         }
         column = column-1
@@ -162,12 +164,11 @@ function keyBehavior(evt){
         column = pieceObj.topLeft[0]
         row = pieceObj.topLeft[1]
 
-        if(column+nOfColsInM-1 < 9 && isOldPieceDone === false && row+nOfRowsInM-1 !== 19){
+        if(pieceObj.topRight[0] <= 9 && isOldPieceDone === false && pieceObj.bottomLeft[1] !== 19){
             for(let c = pieceObj.topRight[0]; c>=pieceObj.topLeft[0]; c--){
                 for(let r = row; r<= pieceObj.bottomLeft[1]; r++){                    
                     board[c+1][r] = board[c][r]
-                    board[c][r] = 'b'
-                    // column = c+1                    
+                    board[c][r] = 'b'                                        
                 }                
             }            
         }
@@ -184,7 +185,7 @@ function dropPiece(){
     row = pieceObj.topLeft[1]
     column = pieceObj.topLeft[0]
 
-    if(row+1 !== 20 && row-1 !== -1){
+    if(pieceObj.bottomLeft[1] !== 19 && row !== 0){
         for(let c=pieceObj.bottomLeft[0]; c<=pieceObj.bottomRight[0]; c++){
             for(let r=pieceObj.bottomLeft[1]; r>=pieceObj.topLeft[1]; r--){
                 board[c][r+1]=board[c][r]
@@ -197,7 +198,7 @@ function dropPiece(){
         for(let c=pieceObj.bottomLeft[0]; c<=pieceObj.bottomRight[0]; c++){
             for(let r=pieceObj.bottomLeft[1]; r>=pieceObj.topLeft[1]; r--){
                 board[c][r+1]=board[c][r]
-                board[c][r] = board[c][0]                                               
+                // board[c][r] = board[c][0]                                               
             } 
             board[c][0] = 'b'                                 
         }           
@@ -205,6 +206,7 @@ function dropPiece(){
         isOldPieceDone = true
         return
     }
+    // isOldPieceDone = true
     row = row+1
     cornerCalculator()    
 }
@@ -219,11 +221,11 @@ function pieceAppear(){
             mArray.push(piece[cIdx][rIdx])
         })
     })
+
     nOfRowsInM = nOfRowsInM/nOfColsInM
     column = originCol
     row = originRow
-    cornerCalculator()
-
+    
     if(isOldPieceDone === true){
         for(let c = column; c < nOfColsInM+column; c++){
             for(let r = row; r < nOfRowsInM+row; r++){
@@ -232,7 +234,7 @@ function pieceAppear(){
             }
         }
     }   
-    
+    cornerCalculator()
     render()
 }
 function isRowFilled(){
@@ -267,6 +269,13 @@ function cornerCalculator(){
     pieceObj.topRight = [column+nOfColsInM-1, row]
     pieceObj.bottomRight = [column+nOfColsInM-1, row+nOfRowsInM-1]
     pieceObj.bottomLeft = [column, row+nOfRowsInM-1]
+}
+function randomPieceGenerator(){
+    let randomNumber = Math.floor(Math.random()*6)
+    let pieceShape = shapes[randomNumber]
+    piece = shapeMatrices[pieceShape]
+    
+    return piece
 }
 init()
 
