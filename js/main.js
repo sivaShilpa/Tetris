@@ -158,15 +158,33 @@ function keyBehavior(evt){
         cornerCalculator()
         render()        
     }else if(evt.key === "ArrowRight"){
-        if(column < 9){
-            column = column + 1
-            board[column][0] = piece[0][0]
-            board[column-1][0] = 'b'
+        column = pieceObj.topLeft[0]
+        
+        if(column+nOfColsInM-1 < 9){
+            for(let c = pieceObj.topRight[0]; c>=pieceObj.topLeft[0]; c--){
+                for(let r = row; r<= pieceObj.bottomLeft[1]; r++){                    
+                    board[c+1][r] = board[c][r]
+                    board[c][r] = 'b'
+                    // column = c+1                    
+                }                
+            }            
         }
         else{
             return
         }
-        render()  
+        column = column+1
+        cornerCalculator()
+        render()      
+
+        // if(column < 9){
+        //     column = column + 1
+        //     board[column][0] = piece[0][0]
+        //     board[column-1][0] = 'b'
+        // }
+        // else{
+        //     return
+        // }
+        // render()  
     }
 }
 function dropPiece(){
