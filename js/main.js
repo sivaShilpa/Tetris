@@ -141,8 +141,9 @@ function keyBehavior(evt){
     }
     else if(evt.key === "ArrowLeft"){
         column = pieceObj.topLeft[0]
+        row = pieceObj.topLeft[1]
         
-        if(column > 0){
+        if(column > 0 && isOldPieceDone === false && row+nOfRowsInM-1 !== 19){
             for(let c = column; c<=pieceObj.topRight[0]; c++){
                 for(let r = row; r<= pieceObj.bottomLeft[1]; r++){                    
                     board[c-1][r] = board[c][r]
@@ -159,8 +160,9 @@ function keyBehavior(evt){
         render()        
     }else if(evt.key === "ArrowRight"){
         column = pieceObj.topLeft[0]
-        
-        if(column+nOfColsInM-1 < 9){
+        row = pieceObj.topLeft[1]
+
+        if(column+nOfColsInM-1 < 9 && isOldPieceDone === false && row+nOfRowsInM-1 !== 19){
             for(let c = pieceObj.topRight[0]; c>=pieceObj.topLeft[0]; c--){
                 for(let r = row; r<= pieceObj.bottomLeft[1]; r++){                    
                     board[c+1][r] = board[c][r]
@@ -175,22 +177,13 @@ function keyBehavior(evt){
         column = column+1
         cornerCalculator()
         render()      
-
-        // if(column < 9){
-        //     column = column + 1
-        //     board[column][0] = piece[0][0]
-        //     board[column-1][0] = 'b'
-        // }
-        // else{
-        //     return
-        // }
-        // render()  
     }
 }
 function dropPiece(){
     isOldPieceDone = false
     row = pieceObj.topLeft[1]
-    
+    column = pieceObj.topLeft[0]
+
     if(row+1 !== 20 && row-1 !== -1){
         for(let c=pieceObj.bottomLeft[0]; c<=pieceObj.bottomRight[0]; c++){
             for(let r=pieceObj.bottomLeft[1]; r>=pieceObj.topLeft[1]; r--){
@@ -221,7 +214,7 @@ function pieceAppear(){
     mArray = []
     piece.forEach((eachCol, cIdx)=>{
         nOfColsInM++
-        piece.forEach((eachRow, rIdx)=>{
+        eachCol.forEach((eachRow, rIdx)=>{
             nOfRowsInM++
             mArray.push(piece[cIdx][rIdx])
         })
@@ -274,9 +267,6 @@ function cornerCalculator(){
     pieceObj.topRight = [column+nOfColsInM-1, row]
     pieceObj.bottomRight = [column+nOfColsInM-1, row+nOfRowsInM-1]
     pieceObj.bottomLeft = [column, row+nOfRowsInM-1]
-    // column = pieceObj.topLeft[0]
-    // row = pieceObj.topLeft[1]
-
 }
 init()
 
