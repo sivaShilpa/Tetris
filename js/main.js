@@ -88,14 +88,9 @@ function init(){
         ['b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b']
     ]
     gameOver = false
-    piece = shapeMatrices.O
     
-    render()
-    if(isOldPieceDone === true){
-        pieceAppear()
-        isOldPieceDone = false
-    }   
-    
+    nextpiece()
+    render()    
 }
 function render(){
     renderBoard()
@@ -135,7 +130,12 @@ function keyBehavior(evt){
         }
         if(cells.every(cell=>{return cell!=='b'}) && bottomCells.every(cell=>{return cell==='b'})){
             dropPiece()
-            row = pieceObj.topLeft[1]+1 
+            // row = pieceObj.topLeft[1]+1 
+        }
+        if(pieceObj.bottomLeft[1] === 19 || isOldPieceDone===true || board[column][pieceObj.bottomLeft[1]+1]!=='b'){
+            isOldPieceDone = true
+            isRowFilled()
+            nextpiece()
         }
         render()
     }
@@ -143,8 +143,7 @@ function keyBehavior(evt){
         column = pieceObj.topLeft[0]
         row = pieceObj.topLeft[1]
         
-        if(column >= 0 && isOldPieceDone === false && pieceObj.bottomLeft[1] !== 19){
-            console.log("A")
+        if(column > 0 && isOldPieceDone === false && pieceObj.bottomLeft[1] !== 19){
             for(let c = column; c<=pieceObj.topRight[0]; c++){
                 for(let r = row; r<= pieceObj.bottomLeft[1]; r++){                    
                     board[c-1][r] = board[c][r]
@@ -154,17 +153,21 @@ function keyBehavior(evt){
             }            
         }
         else{
-            console.log("B")
             return
         }
         column = column-1
         cornerCalculator()
+        if(pieceObj.bottomLeft[1] === 19 || isOldPieceDone===true || board[column][pieceObj.bottomLeft[1]+1]!=='b'){
+            isOldPieceDone = true
+            isRowFilled()
+            nextpiece()
+        }
         render()        
     }else if(evt.key === "ArrowRight"){
         column = pieceObj.topLeft[0]
         row = pieceObj.topLeft[1]
 
-        if(pieceObj.topRight[0] <= 9 && isOldPieceDone === false && pieceObj.bottomLeft[1] !== 19){
+        if(pieceObj.topRight[0]+nOfColsInM-1 <= 9 && isOldPieceDone === false && pieceObj.bottomLeft[1] !== 19){
             for(let c = pieceObj.topRight[0]; c>=pieceObj.topLeft[0]; c--){
                 for(let r = row; r<= pieceObj.bottomLeft[1]; r++){                    
                     board[c+1][r] = board[c][r]
@@ -177,6 +180,11 @@ function keyBehavior(evt){
         }
         column = column+1
         cornerCalculator()
+        if(pieceObj.bottomLeft[1] === 19 || isOldPieceDone===true || board[column][pieceObj.bottomLeft[1]+1]!=='b'){
+            isOldPieceDone = true
+            isRowFilled()
+            nextpiece()
+        }
         render()      
     }
 }
@@ -194,19 +202,19 @@ function dropPiece(){
             board[c][prevRow] = 'b'                       
         }
     }
-    else if(row === 0){
+    else if(row === 0 && board[column][pieceObj.bottomLeft[1]+1]==='b'){
         for(let c=pieceObj.bottomLeft[0]; c<=pieceObj.bottomRight[0]; c++){
             for(let r=pieceObj.bottomLeft[1]; r>=pieceObj.topLeft[1]; r--){
                 board[c][r+1]=board[c][r]
                 // board[c][r] = board[c][0]                                               
             } 
             board[c][0] = 'b'                                 
-        }           
-    }else{
+        } 
+    }else if(pieceObj.bottomLeft[1] === 19 || isOldPieceDone===true || board[column][pieceObj.bottomLeft[1]+1]!=='b'){
         isOldPieceDone = true
-        return
+        isRowFilled()
+        nextpiece()
     }
-    // isOldPieceDone = true
     row = row+1
     cornerCalculator()    
 }
@@ -214,6 +222,8 @@ function pieceAppear(){
     nOfRowsInM = 0
     nOfColsInM = 0
     mArray = []
+    piece = shapeMatrices.O
+    
     piece.forEach((eachCol, cIdx)=>{
         nOfColsInM++
         eachCol.forEach((eachRow, rIdx)=>{
@@ -229,37 +239,43 @@ function pieceAppear(){
     if(isOldPieceDone === true){
         for(let c = column; c < nOfColsInM+column; c++){
             for(let r = row; r < nOfRowsInM+row; r++){
-                mArray.forEach(el => board[c][r] = el)
-                    
+                mArray.forEach(el => board[c][r] = el)                    
             }
         }
-    }   
+    } 
+    isOldPieceDone = false  
     cornerCalculator()
     render()
 }
 function isRowFilled(){
     let rowFilled
-    for(let c = 0; c<=9; c++){
-        if(board[c][row]!=='b'){
-            rowFilled = true
+    for(let r = 0; r<=19; r++){
+        for(let c = 0; c<=9; c++){
+            if(board[c][r]!=='b'){
+                rowFilled = true
+            }
+            else{
+                rowFilled = false
+                break
+            }            
         }
-        else{
-            rowFilled = false
-            break
-        }
-        
+        if(rowFilled){
+            filledRows.push(r)
+        }        
     }
+    filledRows.push(19)
     if(rowFilled){
         disappearRow()
     }    
 }
 function disappearRow(){
-    for(let c = 0; c<=9; c++){
-        if(row>0){
-            for(let r = row; r>0; r--){
-                board[c][r] = board[c][r-1]                
-            }
-                
+    for(let j = filledRows.length-2; j>=0; j++){
+        for(let r = filledRows[j]; r>filledRows[j-1]; r--){
+            if(r>0){
+                for(let c = 0; c<=9; c++){
+                    board[c][r] = board[c][r-1]
+                }
+            }            
         }
     }
     render()
@@ -276,6 +292,11 @@ function randomPieceGenerator(){
     piece = shapeMatrices[pieceShape]
     
     return piece
+}
+function nextpiece(){
+    isRowFilled()
+    pieceAppear()
+    isOldPieceDone = false
 }
 init()
 
