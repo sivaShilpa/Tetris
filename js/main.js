@@ -63,7 +63,7 @@ let nOfColsInM
 let mArray
 let prevCol
 let prevRow
-let pieceObj = {'topLeft': [column, row], 'topRight': [column+nOfColsInM-1, row], 'bottomRight': [column+nOfColsInM-1, row+nOfRowsInM-1], 'bottomLeft': [column, row+nOfRowsInM-1]}
+let pieceObj = {'topLeft': [], 'topRight': [], 'bottomRight': [], 'bottomLeft': []}
 
   /*----- cached elements  -----*/
 
@@ -163,75 +163,31 @@ function keyBehavior(evt){
 }
 function dropPiece(){
     isOldPieceDone = false
-    column = pieceObj.bottomLeft[0]
     row = pieceObj.topLeft[1]
     
     if(row+1 !== 20 && row-1 !== -1){
         for(let c=pieceObj.bottomLeft[0]; c<=pieceObj.bottomRight[0]; c++){
-            for(let r=pieceObj.topLeft[1]; r<=pieceObj.bottomLeft[1]; r++){
+            for(let r=pieceObj.bottomLeft[1]; r>=pieceObj.topLeft[1]; r--){
                 board[c][r+1]=board[c][r]
-                board[c][r] = board[c][r-1]                             
-            }            
+                prevRow = r                                    
+            } 
+            board[c][prevRow] = 'b'                       
         }
     }
     else if(row === 0){
         for(let c=pieceObj.bottomLeft[0]; c<=pieceObj.bottomRight[0]; c++){
-            for(let r=pieceObj.topLeft[1]; r<=pieceObj.bottomLeft[1]; r++){
+            for(let r=pieceObj.bottomLeft[1]; r>=pieceObj.topLeft[1]; r--){
                 board[c][r+1]=board[c][r]
-                board[c][r] = board[c][0]                               
+                board[c][r] = board[c][0]                                               
             } 
-            board[c][0] = 'b'                     
+            board[c][0] = 'b'                                 
         }           
     }else{
         isOldPieceDone = true
         return
     }
-
-    // board[column].forEach((eachRow, rIdx)=>{
-    //     if(rIdx >= prevRow+nOfRowsInM){
-    //         if(board[column][rIdx]!=='b'|| rIdx === 19){
-    //             row = rIdx - nOfRowsInM
-    //         }
-    //     }
-    // })
-    // console.log(column, row)
-    // board[column].forEach((eachRow, rIdx) =>{
-    //     if(rIdx > 0){
-    //         if(board[column][rIdx]!=='b'|| rIdx===19){
-    //             endRowIndex = rIdx
-    //             if(endRowIndex === 19 && board[column][endRowIndex]==='b'){
-    //                 board[column][endRowIndex]=piece[0]
-    //                 row = endRowIndex
-    //                 board[column][0] = 'b'
-    //                 isOldPieceDone = true                    
-    //             }
-    //             else{
-    //                 endRowIndex = endRowIndex-1
-    //                 board[column][endRowIndex]=piece[0]
-    //                 row = endRowIndex
-    //                 board[column][0] = 'b'
-    //                 if(board[column][endRowIndex+1]!=='b'){
-    //                     isOldPieceDone = true
-    //                 }
-    //                 else{
-    //                     isOldPieceDone = false
-    //                 }
-                    
-    //                 if(endRowIndex===1){
-    //                     gameOver = true
-    //                 }
-    //             }
-    //             isRowFilled()                 
-    //         }
-    //     }
-    // })
-    // isOldPieceDone = true
-    // if(isOldPieceDone === true){
-    //     pieceAppear()
-    // }
-    // if(gameOver === true){
-    //     renderMessage()
-    // }
+    row = row+1
+    cornerCalculator()    
 }
 function pieceAppear(){
     nOfRowsInM = 0
@@ -247,6 +203,7 @@ function pieceAppear(){
     nOfRowsInM = nOfRowsInM/nOfColsInM
     column = originCol
     row = originRow
+    cornerCalculator()
 
     if(isOldPieceDone === true){
         for(let c = column; c < nOfColsInM+column; c++){
@@ -285,6 +242,13 @@ function disappearRow(){
         }
     }
     render()
+}
+function cornerCalculator(){
+    pieceObj.topLeft =  [column, row]
+    pieceObj.topRight = [column+nOfColsInM-1, row]
+    pieceObj.bottomRight = [column+nOfColsInM-1, row+nOfRowsInM-1]
+    pieceObj.bottomLeft = [column, row+nOfRowsInM-1]
+
 }
 init()
 
