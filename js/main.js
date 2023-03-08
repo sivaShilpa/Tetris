@@ -121,14 +121,16 @@ function keyBehavior(evt){
     if(evt.key === "ArrowDown"){
         let cells = []
         let bottomCells = []
+        let bottomRow
         if(row === 0){
             for(let c=column; c<column+nOfColsInM; c++){
                 for(let r=row; r<row+nOfRowsInM; r++){
                     cells.push(board[c][r])
-                    bottomCells.push(board[c][r+1])
+                    bottomRow = r+1
                     // console.log(board[c][r])
                     // console.log(board[c][r+1])
                 }
+                bottomCells.push(board[c][bottomRow])
             }
             if(cells.every(cell=>{return cell!=='b'}) && bottomCells.every(cell=>{return cell==='b'})){
                 console.log("I am here")
