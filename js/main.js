@@ -140,19 +140,27 @@ function keyBehavior(evt){
         render()
     }
     else if(evt.key === "ArrowLeft"){
+        column = pieceObj.topLeft[0]
+        
         if(column > 0){
-            column = column - 1
-            board[column][0] = piece[0]
-            board[column+1][0] = 'b'
+            for(let c = column; c<=pieceObj.topRight[0]; c++){
+                for(let r = row; r<= pieceObj.bottomLeft[1]; r++){                    
+                    board[c-1][r] = board[c][r]
+                    board[c][r] = 'b'
+                    column = c-1                    
+                }                
+            }            
         }
         else{
             return
         }
+        column = column-1
+        cornerCalculator()
         render()        
     }else if(evt.key === "ArrowRight"){
         if(column < 9){
             column = column + 1
-            board[column][0] = piece[0]
+            board[column][0] = piece[0][0]
             board[column-1][0] = 'b'
         }
         else{
@@ -248,6 +256,8 @@ function cornerCalculator(){
     pieceObj.topRight = [column+nOfColsInM-1, row]
     pieceObj.bottomRight = [column+nOfColsInM-1, row+nOfRowsInM-1]
     pieceObj.bottomLeft = [column, row+nOfRowsInM-1]
+    // column = pieceObj.topLeft[0]
+    // row = pieceObj.topLeft[1]
 
 }
 init()
