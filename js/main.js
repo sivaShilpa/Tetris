@@ -44,6 +44,8 @@ const shapeMatrices = {
             ['v']
           ]
 }
+originRow = 0
+originCol = 4
 
 
   /*----- state variables -----*/
@@ -61,6 +63,7 @@ let nOfColsInM
 let mArray
 let prevCol
 let prevRow
+let pieceObj = {'topLeft': [column, row], 'topRight': [column+nOfColsInM-1, row], 'bottomRight': [column+nOfColsInM-1, row+nOfRowsInM-1], 'bottomLeft': [column, row+nOfRowsInM-1]}
 
   /*----- cached elements  -----*/
 
@@ -121,28 +124,20 @@ function keyBehavior(evt){
     if(evt.key === "ArrowDown"){
         let cells = []
         let bottomCells = []
-        let bottomRow
-        if(row === 0){
-            for(let c=column; c<column+nOfColsInM; c++){
-                for(let r=row; r<row+nOfRowsInM; r++){
-                    cells.push(board[c][r])
-                    bottomRow = r+1
-                    // console.log(board[c][r])
-                    // console.log(board[c][r+1])
-                }
-                bottomCells.push(board[c][bottomRow])
+               
+        for(let c = pieceObj.bottomLeft[0]; c<=pieceObj.bottomRight[0]; c++){
+            for(let r = pieceObj.topLeft[1]; r<=pieceObj.bottomLeft[1]; r++){
+                let bRow = pieceObj.bottomLeft[1] + 1
+                bottomCells.push(board[c][bRow])
+                cells.push(board[c][r])
             }
-            if(cells.every(cell=>{return cell!=='b'}) && bottomCells.every(cell=>{return cell==='b'})){
-                console.log("I am here")
-            }
+            
         }
-        // if(row === 0){
-        //     let cell = board[column][row]
-        //     let cell1 = board[column][row+1]
-        //     if(cell!=='b'&& cell1==='b'){
-        //         dropPiece()
-        //     }
-        // }        
+        if(cells.every(cell=>{return cell!=='b'}) && bottomCells.every(cell=>{return cell==='b'})){
+            dropPiece()
+            row = pieceObj.topLeft[1]+1 
+        }
+        render()
     }
     else if(evt.key === "ArrowLeft"){
         if(column > 0){
@@ -168,9 +163,38 @@ function keyBehavior(evt){
 }
 function dropPiece(){
     isOldPieceDone = false
-    prevCol = column
-    prevRow = row
-    console.log(column, row)
+    column = pieceObj.bottomLeft[0]
+    row = pieceObj.topLeft[1]
+    
+    if(row+1 !== 20 && row-1 !== -1){
+        for(let c=pieceObj.bottomLeft[0]; c<=pieceObj.bottomRight[0]; c++){
+            for(let r=pieceObj.topLeft[1]; r<=pieceObj.bottomLeft[1]; r++){
+                board[c][r+1]=board[c][r]
+                board[c][r] = board[c][r-1]                             
+            }            
+        }
+    }
+    else if(row === 0){
+        for(let c=pieceObj.bottomLeft[0]; c<=pieceObj.bottomRight[0]; c++){
+            for(let r=pieceObj.topLeft[1]; r<=pieceObj.bottomLeft[1]; r++){
+                board[c][r+1]=board[c][r]
+                board[c][r] = board[c][0]                               
+            } 
+            board[c][0] = 'b'                     
+        }           
+    }else{
+        isOldPieceDone = true
+        return
+    }
+
+    // board[column].forEach((eachRow, rIdx)=>{
+    //     if(rIdx >= prevRow+nOfRowsInM){
+    //         if(board[column][rIdx]!=='b'|| rIdx === 19){
+    //             row = rIdx - nOfRowsInM
+    //         }
+    //     }
+    // })
+    // console.log(column, row)
     // board[column].forEach((eachRow, rIdx) =>{
     //     if(rIdx > 0){
     //         if(board[column][rIdx]!=='b'|| rIdx===19){
@@ -221,21 +245,18 @@ function pieceAppear(){
         })
     })
     nOfRowsInM = nOfRowsInM/nOfColsInM
-    
+    column = originCol
+    row = originRow
+
     if(isOldPieceDone === true){
-        if(nOfColsInM === 2 && nOfRowsInM === 2){
-            column = 4
-            row = 0
-            
-            for(let c = column; c < nOfColsInM+column; c++){
-                for(let r = row; r < nOfRowsInM+row; r++){
-                    mArray.forEach(el => board[c][r] = el)
+        for(let c = column; c < nOfColsInM+column; c++){
+            for(let r = row; r < nOfRowsInM+row; r++){
+                mArray.forEach(el => board[c][r] = el)
                     
-                }
             }
         }
     }   
-    // console.log(column, row)
+    
     render()
 }
 function isRowFilled(){
