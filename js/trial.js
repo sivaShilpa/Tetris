@@ -227,7 +227,7 @@
               } 
               board[c][0] = 'b'                                 
           } 
-      }else if(pieceObj.bottomLeft[1] === 19 || isOldPieceDone===true || board[column][pieceObj.bottomLeft[1]+1]!=='b'){
+      }else if(pieceObj.bottomLeft[1] === 19 || isOldPieceDone===true || bottomCells.some(cell=>cell!=='b')){
           isOldPieceDone = true
           // isRowFilled()
           nextpiece()
