@@ -121,18 +121,7 @@
   }
   function keyBehavior(evt){
       if(evt.key === "ArrowDown"){
-          cells = []
-          bottomCells = []
-                 
-          for(let c = pieceObj.bottomLeft[0]; c<=pieceObj.bottomRight[0]; c++){
-                let r = pieceObj.bottomLeft[1]
-                let bRow = r + 1   
-                if(r < 19){
-                    bottomCells.push(board[c][bRow])
-                    cells.push(board[c][r])   
-                }           
-                                     
-          }
+          findBottomCells()
           if(cells.some(cell=>{return cell!=='b'}) && bottomCells.every(cell=>{return cell==='b'})){
               isOldPieceDone = false
               dropPiece()            
@@ -220,6 +209,7 @@
       isOldPieceDone = false
       row = pieceObj.topLeft[1]
       column = pieceObj.topLeft[0]
+      findBottomCells()
   
       if(pieceObj.bottomLeft[1] !== 19 && row !== 0){
           for(let c=pieceObj.bottomLeft[0]; c<=pieceObj.bottomRight[0]; c++){
@@ -230,7 +220,7 @@
               board[c][prevRow] = 'b'                       
           }
       }
-      else if(row === 0 && board[column][pieceObj.bottomLeft[1]+1]==='b'){
+      else if(row === 0 && bottomCells.every(cell=>cell==='b')){
           for(let c=pieceObj.bottomLeft[0]; c<=pieceObj.bottomRight[0]; c++){
               for(let r=pieceObj.bottomLeft[1]; r>=pieceObj.topLeft[1]; r--){
                   board[c][r+1]=board[c][r]                                                             
@@ -332,6 +322,19 @@
           pieceAppear()
       }    
       isOldPieceDone = false
+  }
+  function findBottomCells(){
+    cells = []
+    bottomCells = []
+                 
+    for(let c = pieceObj.bottomLeft[0]; c<=pieceObj.bottomRight[0]; c++){
+        let r = pieceObj.bottomLeft[1]
+        let bRow = r + 1   
+        if(r < 19){
+            bottomCells.push(board[c][bRow])
+            cells.push(board[c][r])   
+        }                                    
+    }
   }
   init()
   
