@@ -59,6 +59,10 @@
   let nOfRowsInM
   let nOfColsInM
   let mArray
+  let cells = []
+  let bottomCells = []
+  let leftCells = []
+  let rightCells = []
   let pieceObj = {'topLeft': [], 'topRight': [], 'bottomRight': [], 'bottomLeft': []}
   
     /*----- cached elements  -----*/
@@ -117,22 +121,20 @@
   }
   function keyBehavior(evt){
       if(evt.key === "ArrowDown"){
-          let cells = []
-          let bottomCells = []
+          cells = []
+          bottomCells = []
                  
           for(let c = pieceObj.bottomLeft[0]; c<=pieceObj.bottomRight[0]; c++){
-              for(let r = pieceObj.topLeft[1]; r<=pieceObj.bottomLeft[1]; r++){
-                  let bRow = pieceObj.bottomLeft[1] + 1
-                  bottomCells.push(board[c][bRow])
-                  cells.push(board[c][r])
-              }
-              
+            let r = pieceObj.bottomLeft[1]
+            let bRow = r + 1            
+            bottomCells.push(board[c][bRow])
+            cells.push(board[c][r])                            
           }
-          if(cells.every(cell=>{return cell!=='b'}) && bottomCells.every(cell=>{return cell==='b'})){
+          if(cells.some(cell=>{return cell!=='b'}) && bottomCells.every(cell=>{return cell==='b'})){
               isOldPieceDone = false
               dropPiece()            
           }
-          if(pieceObj.bottomLeft[1] === 19 || isOldPieceDone===true || board[column][pieceObj.bottomLeft[1]+1]!=='b'){
+          if(pieceObj.bottomLeft[1] === 19 || bottomCells.some(cell=>{return cell!=='b'})){
               isOldPieceDone = true
               // isRowFilled()
               nextpiece()
@@ -300,7 +302,7 @@
   }
   function nextpiece(){
       if(isOldPieceDone === true){
-          // isRowFilled()
+        //   isRowFilled()
           pieceAppear()
       }    
       isOldPieceDone = false
