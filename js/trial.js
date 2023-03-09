@@ -300,22 +300,22 @@
           }              
       }
         
-    //   if(filledRows.length>0){
-    //       filledRows.push(19)
-    //       disappearRow()
-    //   }    
+      if(filledRows.length>0 && isOldPieceDone===true){
+          filledRows.push(19)
+          disappearRow()
+      }    
   }
   function disappearRow(){
-      for(let j = filledRows.length-2; j>=0; j++){
-          for(let r = filledRows[j]; r>filledRows[j-1]; r--){
-              if(r>0){
-                  for(let c = 0; c<=9; c++){
-                      board[c][r] = board[c][r-1]
-                  }
-              }            
-          }
-      }
-      render()
+    for(let j = filledRows.length-2; j>=0; j--){
+        for(let r = filledRows[j]; r>filledRows[j-1]; r--){
+            if(r>0){
+                    for(let c = 0; c<=9; c++){
+                     board[c][r] = board[c][r-1]
+                }
+            }            
+        }
+    }
+    render()
   }
   function cornerCalculator(){
       pieceObj.topLeft =  [column, row]
