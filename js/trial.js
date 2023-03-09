@@ -125,10 +125,13 @@
           bottomCells = []
                  
           for(let c = pieceObj.bottomLeft[0]; c<=pieceObj.bottomRight[0]; c++){
-            let r = pieceObj.bottomLeft[1]
-            let bRow = r + 1            
-            bottomCells.push(board[c][bRow])
-            cells.push(board[c][r])                            
+                let r = pieceObj.bottomLeft[1]
+                let bRow = r + 1   
+                if(r < 19){
+                    bottomCells.push(board[c][bRow])
+                    cells.push(board[c][r])   
+                }           
+                                     
           }
           if(cells.some(cell=>{return cell!=='b'}) && bottomCells.every(cell=>{return cell==='b'})){
               isOldPieceDone = false
