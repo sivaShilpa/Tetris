@@ -144,8 +144,17 @@
       else if(evt.key === "ArrowLeft"){
           column = pieceObj.topLeft[0]
           row = pieceObj.topLeft[1]
+          cells = []
+          leftCells = []
+                 
+          for(let r = pieceObj.topLeft[1]; r<=pieceObj.bottomRight[1]; r++){
+            let c = pieceObj.topLeft[0]
+            let lCol = c - 1            
+            leftCells.push(board[lCol][r])
+            cells.push(board[c][r])                            
+          }
           
-          if(column > 0 && isOldPieceDone === false && pieceObj.bottomLeft[1] !== 19){
+          if(column > 0 && isOldPieceDone === false && pieceObj.bottomLeft[1] !== 19 && leftCells.every(cell=>cell==='b')){
               for(let c = column; c<=pieceObj.topRight[0]; c++){
                   for(let r = row; r<= pieceObj.bottomLeft[1]; r++){                    
                       board[c-1][r] = board[c][r]
@@ -168,8 +177,17 @@
       }else if(evt.key === "ArrowRight"){
           column = pieceObj.topLeft[0]
           row = pieceObj.topLeft[1]
+          cells = []
+          rightCells = []
+                 
+          for(let r = pieceObj.topLeft[1]; r<=pieceObj.bottomRight[1]; r++){
+            let c = pieceObj.topRight[0]
+            let rCol = c + 1            
+            rightCells.push(board[rCol][r])
+            cells.push(board[c][r])                            
+          }
   
-          if(pieceObj.topRight[0]+nOfColsInM-1 <= 9 && isOldPieceDone === false && pieceObj.bottomLeft[1] !== 19){
+          if(pieceObj.topRight[0]+nOfColsInM-1 <= 9 && isOldPieceDone === false && pieceObj.bottomLeft[1] !== 19 && rightCells.every(cell=>cell==='b')){
               for(let c = pieceObj.topRight[0]; c>=pieceObj.topLeft[0]; c--){
                   for(let r = row; r<= pieceObj.bottomLeft[1]; r++){                    
                       board[c+1][r] = board[c][r]
