@@ -128,7 +128,7 @@
           }
           if(pieceObj.bottomLeft[1] === 19 || bottomCells.some(cell=>{return cell!=='b'})){
               isOldPieceDone = true
-              // isRowFilled()
+              isRowFilled()
               nextpiece()
           }
           render()
@@ -170,6 +170,8 @@
             //     nextpiece()
             // }
             render()        
+          }else{
+            isOldPieceDone = true
           }
           
       }else if(evt.key === "ArrowRight"){
@@ -209,6 +211,8 @@
             //     nextpiece()
             // }
             render() 
+          }else{
+            isOldPieceDone = true
           }
                
       }
@@ -234,15 +238,15 @@
                   board[c][r+1]=board[c][r]                                                             
               } 
               board[c][0] = 'b'                                 
-          } 
-      }else if(pieceObj.bottomLeft[1] === 19 || isOldPieceDone===true || bottomCells.some(cell=>cell!=='b')){
-          isOldPieceDone = true
-          isRowFilled()
-          nextpiece()
-      }
+          } }
+    //   }else if(pieceObj.bottomLeft[1] === 19 || isOldPieceDone===true || bottomCells.some(cell=>cell!=='b')){
+    //     console.log("A")
+    //       isRowFilled()
+    //       nextpiece()
+    //   }
       row = row+1
       cornerCalculator()
-      isOldPieceDone = false
+    //   isOldPieceDone = false
           
   }
   function pieceAppear(){
@@ -295,8 +299,7 @@
               filledRows.push(r)
           }              
       }
-      console.log(filledRows)
-      
+        
     //   if(filledRows.length>0){
     //       filledRows.push(19)
     //       disappearRow()
