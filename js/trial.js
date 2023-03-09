@@ -264,6 +264,10 @@
       } 
       isOldPieceDone = false  
       cornerCalculator()
+      findBottomCells()
+      if(bottomCells.some(cell=>cell!=='b') && pieceObj.topLeft[1]===0){
+        gameOver = true
+      }
       render()
   }
   function isRowFilled(){
