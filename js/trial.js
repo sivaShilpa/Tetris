@@ -152,9 +152,11 @@
                  
           for(let r = pieceObj.topLeft[1]; r<=pieceObj.bottomRight[1]; r++){
             let c = pieceObj.topLeft[0]
-            let lCol = c - 1            
-            leftCells.push(board[lCol][r])
-            cells.push(board[c][r])                            
+            let lCol = c - 1
+            if(c > 0){
+                leftCells.push(board[lCol][r])
+                cells.push(board[c][r]) 
+            }                                       
           }
           
           if(column > 0 && isOldPieceDone === false && pieceObj.bottomLeft[1] !== 19 && leftCells.every(cell=>cell==='b')){
@@ -185,9 +187,12 @@
                  
           for(let r = pieceObj.topLeft[1]; r<=pieceObj.bottomRight[1]; r++){
             let c = pieceObj.topRight[0]
-            let rCol = c + 1            
-            rightCells.push(board[rCol][r])
-            cells.push(board[c][r])                            
+            let rCol = c + 1   
+            if(c<9){
+                rightCells.push(board[rCol][r])
+                cells.push(board[c][r]) 
+            }         
+                                       
           }
   
           if(pieceObj.topRight[0]+nOfColsInM-1 <= 9 && isOldPieceDone === false && pieceObj.bottomLeft[1] !== 19 && rightCells.every(cell=>cell==='b')){
