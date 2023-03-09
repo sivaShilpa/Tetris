@@ -283,8 +283,8 @@
       render()
   }
   function isRowFilled(){
-      let rowFilled
-      filledRows = []
+      let rowFilled = false
+    //   filledRows = [0]
       for(let r = 0; r<=19; r++){
           for(let c = 0; c<=9; c++){
               if(board[c][r]!=='b'){
@@ -296,25 +296,42 @@
               }            
           }
           if(rowFilled){
-              filledRows.push(r)
+            if(r>0){
+                for(let c = 0; c<=9; c++){
+                    board[c][r] = board[c][r-1]
+                }
+            }
+            if(r===0){
+                for(let c = 0; c<=9; c++){
+                    board[c][r] = 'b'
+                }
+            }                              
+                    
           }              
       }
+    //   console.log(filledRows)
         
-      if(filledRows.length>0 && isOldPieceDone===true){
-          filledRows.push(19)
-          disappearRow()
-      }    
+    //   if(filledRows.length>1 && isOldPieceDone===true){
+    //       filledRows.push(19)
+    //       disappearRow()
+    //   }    
   }
   function disappearRow(){
-    for(let j = filledRows.length-2; j>=0; j--){
-        for(let r = filledRows[j]; r>filledRows[j-1]; r--){
+    for(let j = 0; j<filledRows.length; j++){
+        for(let r = filledRows[j]; r<filledRows[j+1]; r++){            
             if(r>0){
-                    for(let c = 0; c<=9; c++){
-                     board[c][r] = board[c][r-1]
+                for(let c = 0; c<=9; c++){
+                    board[c][r] = board[c][r-1]
                 }
-            }            
-        }
+            }
+            if(r===0){
+                for(let c = 0; c<=9; c++){
+                    board[c][r] = 'b'
+                }
+            }                              
+        }            
     }
+    // isRowFilled()
     render()
   }
   function cornerCalculator(){
