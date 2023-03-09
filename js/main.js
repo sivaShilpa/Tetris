@@ -134,12 +134,11 @@ function keyBehavior(evt){
             
         // }
         if(cells.every(cell=>{return cell!=='b'}) && bottomCells.every(cell=>{return cell==='b'})){
-            console.log("A")
-            // isOldPieceDone = false
+            isOldPieceDone = false
             dropPiece()
             // cornerCalculator()            
         }else if(pieceObj.bottomLeft[1] === 19 || bottomCells.some(cell=>{return cell!=='b'}) && isOldPieceDone === true){
-            // isOldPieceDone = true
+            isOldPieceDone = true
             nextPiece()
             // cornerCalculator()
         }
@@ -195,10 +194,11 @@ function keyBehavior(evt){
     }
 }
 function dropPiece(){
-    // isOldPieceDone = false
-    checkBottomCells()
+    isOldPieceDone = false
+    row = pieceObj.topLeft[1]
+    column = pieceObj.topLeft[0]
 
-    if(pieceObj.bottomLeft[1] !== 19 && row !== 0 && bottomCells.every(cell=>cell === 'b')){
+    if(pieceObj.bottomLeft[1] !== 19 && row !== 0){
         for(let c=pieceObj.bottomLeft[0]; c<=pieceObj.bottomRight[0]; c++){
             for(let r=pieceObj.bottomLeft[1]; r>=pieceObj.topLeft[1]; r--){
                 board[c][r+1]=board[c][r]
@@ -309,7 +309,7 @@ function nextPiece(){
         // isRowFilled()
         pieceAppear()
     }    
-    // isOldPieceDone = false
+    isOldPieceDone = false
 }
 function checkBottomCells(){
     column = pieceObj.topLeft[0]
