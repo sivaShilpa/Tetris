@@ -59,6 +59,10 @@ let filledRows = []
 let nOfRowsInM
 let nOfColsInM
 let mArray
+let cells = []
+let bottomCells = []
+let leftCells = []
+let rightCells = []
 let pieceObj = {'topLeft': [], 'topRight': [], 'bottomRight': [], 'bottomLeft': []}
 
   /*----- cached elements  -----*/
@@ -89,7 +93,7 @@ function init(){
     ]
     gameOver = false
     render() 
-    nextpiece()
+    nextPiece()
        
 }
 function render(){
@@ -117,25 +121,27 @@ function renderControls(){
 }
 function keyBehavior(evt){
     if(evt.key === "ArrowDown"){
-        let cells = []
-        let bottomCells = []
-               
-        for(let c = pieceObj.bottomLeft[0]; c<=pieceObj.bottomRight[0]; c++){
-            for(let r = pieceObj.topLeft[1]; r<=pieceObj.bottomLeft[1]; r++){
-                let bRow = pieceObj.bottomLeft[1] + 1
-                bottomCells.push(board[c][bRow])
-                cells.push(board[c][r])
-            }
+        checkBottomCells()
+        // column = pieceObj.topLeft[0]
+        // console.log(isOldPieceDone)
+        // //  console.log(pieceObj)      
+        // for(let c = pieceObj.bottomLeft[0]; c<=pieceObj.bottomRight[0]; c++){
+        //     for(let r = pieceObj.topLeft[1]; r<=pieceObj.bottomLeft[1]; r++){
+        //         let bRow = pieceObj.bottomLeft[1] + 1
+        //         bottomCells.push(board[c][bRow])
+        //         cells.push(board[c][r])
+        //     }
             
-        }
+        // }
         if(cells.every(cell=>{return cell!=='b'}) && bottomCells.every(cell=>{return cell==='b'})){
-            isOldPieceDone = false
-            dropPiece()            
-        }
-        if(pieceObj.bottomLeft[1] === 19 || isOldPieceDone===true || board[column][pieceObj.bottomLeft[1]+1]!=='b'){
-            isOldPieceDone = true
-            // isRowFilled()
-            nextpiece()
+            console.log("A")
+            // isOldPieceDone = false
+            dropPiece()
+            // cornerCalculator()            
+        }else if(pieceObj.bottomLeft[1] === 19 || bottomCells.some(cell=>{return cell!=='b'}) && isOldPieceDone === true){
+            // isOldPieceDone = true
+            nextPiece()
+            // cornerCalculator()
         }
         render()
     }
@@ -160,7 +166,7 @@ function keyBehavior(evt){
         // if(pieceObj.bottomLeft[1] === 19 || isOldPieceDone===true || board[column][pieceObj.bottomLeft[1]+1]!=='b'){
         //     isOldPieceDone = true
         //     isRowFilled()
-        //     nextpiece()
+        //     nextPiece()
         // }
         render()        
     }else if(evt.key === "ArrowRight"){
@@ -183,17 +189,16 @@ function keyBehavior(evt){
         // if(pieceObj.bottomLeft[1] === 19 || isOldPieceDone===true || board[column][pieceObj.bottomLeft[1]+1]!=='b'){
         //     isOldPieceDone = true
         //     isRowFilled()
-        //     nextpiece()
+        //     nextPiece()
         // }
         render()      
     }
 }
 function dropPiece(){
-    isOldPieceDone = false
-    row = pieceObj.topLeft[1]
-    column = pieceObj.topLeft[0]
+    // isOldPieceDone = false
+    checkBottomCells()
 
-    if(pieceObj.bottomLeft[1] !== 19 && row !== 0){
+    if(pieceObj.bottomLeft[1] !== 19 && row !== 0 && bottomCells.every(cell=>cell === 'b')){
         for(let c=pieceObj.bottomLeft[0]; c<=pieceObj.bottomRight[0]; c++){
             for(let r=pieceObj.bottomLeft[1]; r>=pieceObj.topLeft[1]; r--){
                 board[c][r+1]=board[c][r]
@@ -209,10 +214,11 @@ function dropPiece(){
             } 
             board[c][0] = 'b'                                 
         } 
+    
     }else if(pieceObj.bottomLeft[1] === 19 || isOldPieceDone===true || board[column][pieceObj.bottomLeft[1]+1]!=='b'){
         isOldPieceDone = true
         // isRowFilled()
-        nextpiece()
+        nextPiece()
     }
     row = row+1
     cornerCalculator()
@@ -298,12 +304,33 @@ function randomPieceGenerator(){
     
     return piece
 }
-function nextpiece(){
+function nextPiece(){
     if(isOldPieceDone === true){
         // isRowFilled()
         pieceAppear()
     }    
-    isOldPieceDone = false
+    // isOldPieceDone = false
+}
+function checkBottomCells(){
+    column = pieceObj.topLeft[0]
+    row = pieceObj.topLeft[1]
+    // console.log(isOldPieceDone)
+    //  console.log(pieceObj)      
+    for(let c = pieceObj.bottomLeft[0]; c<=pieceObj.bottomRight[0]; c++){
+        for(let r = pieceObj.topLeft[1]; r<=pieceObj.bottomLeft[1]; r++){
+            let bRow = pieceObj.bottomLeft[1] + 1
+            bottomCells.push(board[c][bRow])
+            cells.push(board[c][r])
+        }
+        
+    }
+
+}
+function checkLeftCells(){
+
+}
+function checkRightCells(){
+
 }
 init()
 
