@@ -114,6 +114,10 @@ function renderMessage() {
     if (gameOver === true) {
         messageEl.innerText = "GAME OVER!!!"
     }
+    else{
+        // isOldPieceDone = true
+        messageEl.innerText=""   
+    }
 }
 function renderControls() {
     playAgainEl.style.visibility
@@ -137,42 +141,57 @@ function keyBehavior(evt) {
         column = pieceObj.topLeft[0]
         row = pieceObj.topLeft[1]
         findBottomCells()
+        console.log(column, row)
+        console.log(bottomCells)
+        console.log(pieceObj)
         if (bottomCells.every(cell => cell === 'b')) {
             cells = []
             leftCells = []
 
-            for (let r = pieceObj.topLeft[1]; r <= pieceObj.bottomRight[1]; r++) {
+            // console.log(pieceObj.topLeft[1], pieceObj.topLeft[0])
+            for(let r = pieceObj.topLeft[1]; r <= pieceObj.bottomLeft[1]; r++){
                 let c = pieceObj.topLeft[0]
                 let lCol = c - 1
                 if (c > 0) {
+                    console.log(r)
                     leftCells.push(board[lCol][r])
                     cells.push(board[c][r])
                 }
             }
-
+            console.log(leftCells)
+            console.log(column, isOldPieceDone, pieceObj.bottomLeft[1])
+            console.log("B")
+            
             if (column > 0 && isOldPieceDone === false && pieceObj.bottomLeft[1] !== 19 && leftCells.every(cell => cell === 'b')) {
                 for (let c = column; c <= pieceObj.topRight[0]; c++) {
                     for (let r = row; r <= pieceObj.bottomLeft[1]; r++) {
                         board[c - 1][r] = board[c][r]
                         board[c][r] = 'b'
                         column = c - 1
+                        console.log(column)
                     }
+                    console.log(column, isOldPieceDone, pieceObj.bottomLeft[1])
+                    console.log("B")
                 }
+                column = column - 1
+                console.log(column)
+                
             }
             else {
+                console.log("A")
                 return
             }
-            column = column - 1
+           
             cornerCalculator()
-            // if(pieceObj.bottomLeft[1] === 19 || isOldPieceDone===true || board[column][pieceObj.bottomLeft[1]+1]!=='b'){
-            //     isOldPieceDone = true
-            //     isRowFilled()
-            //     nextpiece()
-            // }
             render()
         } else {
-            isOldPieceDone = true
+            findBottomCells()
+            if(bottomCells.some(cell=>cell!=='b')){
+                isOldPieceDone = true
+            }
+
         }
+            
 
     } else if (evt.key === "ArrowRight") {
         column = pieceObj.topLeft[0]
@@ -310,10 +329,10 @@ function randomPieceGenerator() {
 }
 function nextpiece() {
     if (isOldPieceDone === true) {
-        //   isRowFilled()
         pieceAppear()
+        isOldPieceDone = false
     }
-    isOldPieceDone = false
+    
 }
 function findBottomCells() {
     cells = []
