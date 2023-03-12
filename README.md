@@ -2,7 +2,7 @@
 Tetris is a traditional puzzle video game created by Alexey Pajitnov in 1984. Players complete a line by moving a shape block on the board. Every line that is completed disappears and the above rows fall down. The game ends when the uncleared lines reach the top of the board. 
 
 # Screenshots
-![image](https://imgur.com/BlidyY9)
+![image](https://imgur.com/a/NDsm0lT)
 ![image](https://imgur.com/NFusDlN)
 ![image](https://imgur.com/XL5FOX9)
 ![image](https://imgur.com/HQx4en3)
