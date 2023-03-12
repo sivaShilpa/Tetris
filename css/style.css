@@ -17,7 +17,7 @@
     width: 20vmin;
     grid-template-rows: repeat(20, 1fr);
     grid-template-columns: repeat(10, 1fr);
-    padding-left: 6vmin;
+    padding-left: 55vmin;
     margin: 0vmin 25vmin 5vmin 25vmin;
 }    
 
@@ -38,6 +38,6 @@
     font-size: 2vmin;
     color: #F283A0;
     background-color: black;
-    margin-left: 41vmin;
+    margin-left: 87vmin;
 }
   
