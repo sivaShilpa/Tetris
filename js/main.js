@@ -344,13 +344,26 @@ function blockGenerator() {
     currentColumn = originCol
     currentRow = originRow
     start = currentRow
+    let isFreeSpaceArray = []
 
-    //places the block into the board
+    //checks if there is space for a new block and places the block into the board
+
+    for(let i = 0; i<nOfRowsInBlock; i++){
+        for(let j = currentColumn; j< currentColumn+nOfColsInBlock; j++){
+            isFreeSpaceArray.push(board[j][i])            
+        }   
+        
+     }
     
-    while(start < blockArray.length){
-        board[currentColumn].splice(0, nOfRowsInBlock, ...blockArray.slice(start, start+nOfRowsInBlock))
-        start = start+nOfRowsInBlock
-        currentColumn++
+    if(isFreeSpaceArray.every(el=>el==='b')){
+        while(start < blockArray.length){        
+            board[currentColumn].splice(0, nOfRowsInBlock, ...blockArray.slice(start, start+nOfRowsInBlock))
+            start = start+nOfRowsInBlock
+            currentColumn++        
+        }
+    }else{
+        gameOver = true
+        render()
     }
     
     //resetting the column position and row position of the block
